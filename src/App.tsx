@@ -1,32 +1,77 @@
+import { useEffect, useState } from 'react';
+
+import { getThings, getAreas, type Thing, type Area } from './services/api';
+
+import ZoneSection from './components/ZoneSection';
+
 function App() {
+	const [areas, setAreas] = useState<Area[]>([]);
+	const [things, setThings] = useState<Thing[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				setLoading(true);
+				setError(null);
+				const [areasData, thingsData] = await Promise.all([
+					getAreas(),
+					getThings(),
+				]);
+				setAreas(areasData);
+				setThings(thingsData);
+			} catch (err) {
+				const errorMessage =
+					err instanceof Error ? err.message : 'Failed to load data';
+				setError(errorMessage);
+				console.error('Error loading data:', err);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	if (loading) {
+		return (
+			<main className="min-h-screen bg-[#07142B] px-6 py-10 font-[600] text-white">
+				<div className="mx-auto flex max-w-6xl items-center justify-center">
+					<div className="text-xl text-[#E6EEFF]">Loading...</div>
+				</div>
+			</main>
+		);
+	}
+
+	if (error) {
+		return (
+			<main className="min-h-screen bg-[#07142B] px-6 py-10 font-[600] text-white">
+				<div className="mx-auto flex max-w-6xl items-center justify-center">
+					<div className="text-xl text-red-400">Error: {error}</div>
+				</div>
+			</main>
+		);
+	}
+
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 to-indigo-100 dark:from-zinc-900 dark:to-zinc-950">
-			<div className="mx-4 w-full max-w-xl rounded-2xl bg-white/70 dark:bg-zinc-900/70 backdrop-blur p-8 shadow-xl ring-1 ring-black/5 dark:ring-white/5">
-				<h1 className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-					Zone Flow
-				</h1>
-				<p className="mt-2 text-zinc-600 dark:text-zinc-400">
-					Tailwind CSS is connected and working. Try changing the utility
-					classes in this block.
-				</p>
-				<div className="mt-6 flex gap-3">
-					<button className="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-zinc-900 transition-colors">
-						Primary
-					</button>
-					<button className="px-4 py-2 rounded-lg border border-zinc-300 text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800 transition-colors">
-						Secondary
-					</button>
-				</div>
-				<div className="mt-6 grid grid-cols-2 gap-4 text-sm">
-					<div className="rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 p-4 text-center">
-						grid
-					</div>
-					<div className="rounded-lg border border-dashed border-zinc-300 dark:border-zinc-700 p-4 text-center">
-						utilities
-					</div>
-				</div>
+		<main className="min-h-screen bg-[#07142B] px-6 py-10 font-[600] text-white">
+			<div className="mx-auto flex max-w-6xl flex-col gap-10">
+				{areas.map((area) => {
+					const areaThings = things.filter((t) => t.areaId === area.areaId);
+					return areaThings.length > 0 ? (
+						<ZoneSection key={area.areaId} area={area} things={areaThings} />
+					) : (
+						// Показать только заголовок зоны, если нет вещей
+						<section key={area.areaId}>
+							<h2 className="mb-4 text-xl font-semibold text-[#E6EEFF]">
+								{area.name}
+							</h2>
+						</section>
+					);
+				})}
 			</div>
-		</div>
+		</main>
 	);
 }
 
