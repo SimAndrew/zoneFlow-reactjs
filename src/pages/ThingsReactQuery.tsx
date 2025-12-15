@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { getThings, getAreas, type Thing, type Area } from '../services/api';
 import ZoneSection from '../components/ZoneSection';
 
-// Заглушка для страницы с React Query
 function ThingsReactQuery() {
 	const {
 		data: areas,

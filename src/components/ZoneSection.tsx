@@ -20,6 +20,7 @@ const ZoneSection: React.FC<ZoneSectionProps> = React.memo(
 				.map((sku) => things.find((t) => t.sku === sku))
 				.filter(Boolean) as Thing[];
 			if (row1.length === 0 && row2.length === 0) return null;
+
 			return (
 				<section>
 					<h2 className="mb-4 text-xl font-semibold text-[#E6EEFF]">
@@ -44,6 +45,7 @@ const ZoneSection: React.FC<ZoneSectionProps> = React.memo(
 				</section>
 			);
 		}
+
 		const sortedThings = [...things].sort((a, b) => {
 			const aNum = parseInt(a.sku, 10);
 			const bNum = parseInt(b.sku, 10);
@@ -55,7 +57,9 @@ const ZoneSection: React.FC<ZoneSectionProps> = React.memo(
 				sensitivity: 'base',
 			});
 		});
+
 		if (sortedThings.length === 0) return null;
+
 		return (
 			<section>
 				<h2 className="mb-4 text-xl font-semibold text-[#E6EEFF]">

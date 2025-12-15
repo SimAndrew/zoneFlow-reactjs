@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 const NavTabs: React.FC = React.memo(() => {
 	const navigate = useNavigate();
 	const location = useLocation();
+
 	return (
 		<div className="flex justify-center gap-4 mb-10 pt-8">
 			<button

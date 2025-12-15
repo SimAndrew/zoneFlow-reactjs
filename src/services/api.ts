@@ -13,9 +13,7 @@ export interface Area {
 	name: string;
 }
 
-/**
- * Function to validate Thing data
- */
+/* Function to validate Thing data */
 function validateThing(data: unknown): data is Thing {
 	if (typeof data !== 'object' || data === null) return false;
 
@@ -32,9 +30,7 @@ function validateThing(data: unknown): data is Thing {
 	);
 }
 
-/**
- * Function to validate Area data
- */
+/* Function to validate Area data */
 function validateArea(data: unknown): data is Area {
 	if (typeof data !== 'object' || data === null) return false;
 
@@ -43,9 +39,7 @@ function validateArea(data: unknown): data is Area {
 	return typeof area.areaId === 'number' && typeof area.name === 'string';
 }
 
-/**
- * Function to get the list of parking spots
- */
+/* Function to get the list of parking spots */
 export async function getThings(): Promise<Thing[]> {
 	try {
 		const response = await fetch('/things.json');
@@ -60,7 +54,6 @@ export async function getThings(): Promise<Thing[]> {
 			throw new Error('Invalid data format: expected array');
 		}
 
-		// Валидация каждого элемента
 		const validatedThings = data.filter((item, index) => {
 			const isValid = validateThing(item);
 			if (!isValid) {
@@ -80,9 +73,7 @@ export async function getThings(): Promise<Thing[]> {
 	}
 }
 
-/**
- * Function to get the list of parking areas
- */
+/* Function to get the list of parking areas */
 export async function getAreas(): Promise<Area[]> {
 	try {
 		const response = await fetch('/areas.json');
@@ -97,7 +88,6 @@ export async function getAreas(): Promise<Area[]> {
 			throw new Error('Invalid data format: expected array');
 		}
 
-		// Валидация каждого элемента
 		const validatedAreas = data.filter((item, index) => {
 			const isValid = validateArea(item);
 			if (!isValid) {
